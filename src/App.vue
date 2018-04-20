@@ -21,32 +21,40 @@
               ></v-select>
           </td>
           <td>
-        <v-menu>
-          <v-text-field
-            slot="activator"
-            label="Start Date"
-            v-model="date"
-            prepend-icon="event"
-            readonly
-          ></v-text-field>
-          <v-date-picker
-            type="month"
-            v-model="date"
-            no-title
-            scrollable
-          >
-          </v-date-picker>
-        </v-menu>
+            <v-menu
+              lazy
+              :close-on-content-click="true"
+              transition="scale-transition"
+              offset-y
+              full-width
+              :nudge-right="40"
+              max-width="290px"
+              min-width="290px"
+              :return-value.sync="props.item.date">
+              <v-text-field
+                slot="activator"
+                label="Start Date"
+                v-model="props.item.date"
+                prepend-icon="event"
+                required
+                readonly
+              ></v-text-field>
+              <v-date-picker
+                type="date"
+                v-model="props.item.date"
+                no-title
+                scrollable
+                show-current
+              >
+              </v-date-picker>
+            </v-menu>
           </td>
-          <td class="text-xs-right">{{ props.item.category }}</td>
-          <td class="text-xs-right">{{ props.item.score }}</td>
-          <td class="text-xs-right">{{ props.item.test }}</td>
+          <td class="">{{ props.item.category }}</td>
+          <td class="">{{ props.item.score }}</td>
+          <td class="">{{ props.item.test }}</td>
         </template>
       </v-data-table>
     </v-content>
-    <!-- <v-footer :fixed="fixed" app>
-      <span>&copy; Just a demo, 2018</span>
-    </v-footer> -->
   </v-app>
 </template>
 
@@ -56,11 +64,9 @@ export default {
   data () {
     return {
       title: "Singular Vue",
-      date: null,
       menu: false,
-      modal: false,
       states: [
-          { text: 'State 1' },
+          { text: 'State 1', number: 2 },
           { text: 'State 2' },
           { text: 'State 3' },
           { text: 'State 4' },
@@ -71,100 +77,80 @@ export default {
       headers: [
         { text: "Employer", align: "left", sortable: false, value: "name"},
         { text: "Category", value: "category" },
-        { text: "Date", value: "date" },
+        { text: "Date", value: "date", width: '20%' },
         { text: "Performance", value: "performance" },
         { text: "Score", value: "score" },
         { text: "Test", value: "test" }
-      ],
+      ],  
       items: [{
-          value: false,
-          name: 'Frozen Yogurt',
+          name: 'Samsung',
           category: 159,
           score: 6.0,
           test: 24,
-          protein: 4.0,
-          iron: '1%'
+          date: null
         },
         {
-          value: false,
-          name: 'Ice cream sandwich',
+          name: 'Panasonic',
           category: 237,
           score: 9.0,
           test: 37,
-          protein: 4.3,
-          iron: '1%'
+          date: null
         },
         {
-          value: false,
-          name: 'Eclair',
+          name: 'Sony',
           category: 262,
           score: 16.0,
           test: 23,
-          protein: 6.0,
-          iron: '7%'
+          date: null
         },
         {
-          value: false,
-          name: 'Cupcake',
+          name: 'Toshiba',
           category: 305,
           score: 3.7,
           test: 67,
-          protein: 4.3,
-          iron: '8%'
+          date: null
         },
         {
-          value: false,
-          name: 'Gingerbread',
+          name: 'LG',
           category: 356,
           score: 16.0,
           test: 49,
-          protein: 3.9,
-          iron: '16%'
+          date: null
         },
         {
-          value: false,
-          name: 'Jelly bean',
+          name: 'JVC',
           category: 375,
           score: 0.0,
           test: 94,
-          protein: 0.0,
-          iron: '0%'
+          date: null
         },
         {
-          value: false,
-          name: 'Lollipop',
+          name: 'Lenovo',
           category: 392,
           score: 0.2,
           test: 98,
-          protein: 0,
-          iron: '2%'
+          date: null
         },
         {
-          value: false,
-          name: 'Honeycomb',
+          name: 'Hewlett Packard',
           category: 408,
           score: 3.2,
           test: 87,
-          protein: 6.5,
-          iron: '45%'
+          date: null
         },
         {
-          value: false,
-          name: 'Donut',
+          name: 'Hitachi',
           category: 452,
           score: 25.0,
           test: 51,
-          protein: 4.9,
-          iron: '22%'
+          date: null
         },
         {
-          value: false,
-          name: 'KitKat',
+          name: 'Logitec',
           category: 518,
           score: 26.0,
           test: 65,
-          protein: 7,
-          iron: '6%'
+          date: null
         }]
     };
   },
