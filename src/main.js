@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
+import FloatThead from './floathead/floathead.js'
 import 'vuetify/dist/vuetify.min.css'
 import './styles/datatable.css'
 
@@ -15,6 +16,6 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
-  components: {App},
+  components: {App, FloatThead},
   template: '<App/>'
 })
