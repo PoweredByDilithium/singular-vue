@@ -6,6 +6,8 @@
     <v-content>
       <!-- <router-view/> -->
       <v-dialog v-model="dialog" max-width="500px">
+        <!-- color: set element colour-->
+        <!-- slot: activator will activate parent component when clicked -->
         <v-btn color="primary" dark slot="activator" class="mb-2">New Item</v-btn>
         <v-card>
           <v-card-title>
@@ -13,16 +15,20 @@
           </v-card-title>
           <v-card-text>
             <v-container grid-list-md>
+              <!-- v-layout: used for seperating sections, contains v-flex -->
               <v-layout wrap>
+                <!-- v-flex: automatically sets children to flex: 1 1 auto -->
                 <v-flex xs12 sm6 md4>
                   <v-text-field label="Employer" v-model="editedItem.name"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
+                  <!-- v-select: dropdown -->
+                  <!-- v-bind: bound to 'states' as a list of objects -->
+                  <!-- v-model: object property -->
                   <v-select
                     v-bind:items="states"
                     v-model="editedItem.state"
                     label="State"
-                    single-line
                   ></v-select>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
@@ -39,30 +45,42 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
+            <!-- flat: styling for buttons, appears flush with background -->
+            <!-- '@' replaces 'v-on:' in Vue syntax -->
+            <!-- native listens directly to a native event on the root element of a component -->
             <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
             <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-btn color="secondary" dark @click="switchDataSet" class="mb-2">Switch Dataset</v-btn>
       <!-- toggle hide-actions for pagination -->
+      <!-- : replaces v-bind in Vue -->
+      <!-- headers : bound to array for headers -->
+      <!-- items: bound to array of objects -->
       <v-data-table
         :headers="headers"
         :items="items"
         hide-actions
         class="elevation-1"
       >
+      <!-- slot: which items will be rendered in this template -->
         <template slot="items" slot-scope="props">
-          <td>{{ props.item.name }}</td>
+          <td>{{ props.item.name }} </td>
           <td>
             <!-- Added v-model to bind to object property -->
               <v-select
-                v-bind:items="states"
+                :items="states"
                 v-model="props.item.state"
                 label="State"
-                single-line
               ></v-select>
           </td>
           <td>
+            <!-- lazy: Conditionally renders content on mounted. Will only render content if activated 
+                 close-on-content-click: designates if menu should close when its content is clicked
+                 transition: sets the component transition. Can be one of the built in transitions or custom
+                 offset-y: offset the menu on the y-axis
+            -->
             <v-menu
               lazy
               :close-on-content-click="true"
@@ -76,9 +94,11 @@
                 slot="activator"
                 label="Start Date"
                 v-model="props.item.date"
-                prepend-icon="event"
+                append-icon="event"
                 required
               ></v-text-field>
+              <!-- scrollable: allows changing displayed month with mouse scroll -->
+              <!-- show-current: toggles visibility of the current date/month outline or shows the provided date/month as a current -->
               <v-date-picker
                 type="date"
                 v-model="props.item.date"
@@ -104,9 +124,14 @@
               <v-icon color="teal">edit</v-icon>
             </v-btn>
             <v-btn icon class="mx-0" @click="deleteItem(props.item)">
-              <v-icon color="pink">delete</v-icon>
+              <v-icon color="red">delete</v-icon>
             </v-btn>
           </td>
+        </template>
+        <template slot="expand" slot-scope="props">
+          <v-card flat>
+            <v-card-text>Peek-a-boo!</v-card-text>
+          </v-card>
         </template>
       </v-data-table>
     </v-content>
@@ -131,6 +156,7 @@ export default {
   },
     methods: {
     initialize () {
+      if (this.dataSelection){
       this.items = [
 {
           name: 'Samsung',
@@ -223,7 +249,21 @@ export default {
           TextValue: null
         }
       ]
-    },
+    } else{
+      this.items = [{
+          name: 'parent',
+          state: null,
+          category: 518,
+          score: 26.0,
+          test: 65,
+          date: null,
+          TextValue: null,
+          child: {
+            name: 'child'
+          }
+        }];
+    }
+      },
     editItem (item) {
       this.editedIndex = this.items.indexOf(item)
       this.editedItem = Object.assign({}, item)
@@ -235,10 +275,7 @@ export default {
     },
     close () {
       this.dialog = false
-      setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
-      }, 300)
     },
     save () {
       if (this.editedIndex > -1) {
@@ -247,23 +284,21 @@ export default {
         this.items.push(this.editedItem)
       }
       this.close()
+    },
+    switchDataSet () {
+      this.dataSelection = !this.dataSelection
+      this.initialize()
     }
   },
   data () {
     return {
       title: "Singular Vue",
       menu: false,
+      dataSelection: true,
       items: [],
+      parentChildItems: [],
       editedIndex: -1,
-      editedItem: {
-        name: '',
-          state: null,
-          category: 0,
-          score: 0,
-          test: 0,
-          date: null,
-          TextValue: null
-      },
+      editedItem: {},
       defaultItem: {
         name: '',
           state: null,
@@ -274,7 +309,7 @@ export default {
           TextValue: null
       },
       states: [
-          { text: 'State 1', value:1, group : 'Group 1'},
+          { text: 'AAState 1', value:11  , group : 'Group 1'},
           { text: 'State 2', value:2, group : 'Group 2'},
           { text: 'State 3', value:3, group : 'Group 3'},
           { text: 'State 4', value:4, group : 'Group 4'},
