@@ -15,7 +15,7 @@
           </v-card-title>
           <v-card-text>
             <v-container grid-list-md>
-              <v-form v-model="valid">
+              <v-form ref="form" v-model="valid">
               <!-- v-layout: used for seperating sections, contains v-flex -->
               <v-layout wrap>
                 <!-- v-flex: automatically sets children to flex: 1 1 auto -->
@@ -69,7 +69,8 @@
       >
       <!-- slot: which items will be rendered in this template -->
         <template slot="items" slot-scope="props">
-          <td>{{ props.item.name }} </td>
+          <tr>
+          <td @click="props.item.expanded = !props.item.expanded">{{ props.item.name }} </td>
           <td>
             <!-- Added v-model to bind to object property -->
               <v-select
@@ -133,12 +134,24 @@
               <v-icon color="red">delete</v-icon>
             </v-btn>
           </td>
+          </tr>
+          <tr class="expand" v-show="props.item.expanded">
+            <td colspan="100%">
+              <v-expansion-panel>
+                <v-expansion-panel-content>
+                  <v-card>
+                    <v-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</v-card-text>
+                  </v-card>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </td>
+          </tr>
         </template>
-        <template slot="expand" slot-scope="props">
+        <!-- <template slot="expand" slot-scope="props">
           <v-card flat>
             <v-card-text>Peek-a-boo!</v-card-text>
           </v-card>
-        </template>
+        </template> -->
       </v-data-table>
     </v-content>
   </v-app>
@@ -159,19 +172,23 @@ export default {
   },
   created () {
     this.initialize()
+    this.items.forEach(i => {
+      i.expanded = false
+    })
   },
     methods: {
     initialize () {
       if (this.dataSelection){
       this.items = [
-{
+        {
           name: 'Samsung',
           state: null,
           category: 159,
           score: 6.0,
           test: 24,
           date: null,
-          email: null
+          email: null,
+          expanded: false,
         },
         {
           name: 'Panasonic',
@@ -180,7 +197,8 @@ export default {
           score: 9.0,
           test: 37,
           date: null,
-          email: null
+          email: null,
+          expanded: false,
         },
         {
           name: 'Sony',
@@ -189,7 +207,8 @@ export default {
           score: 16.0,
           test: 23,
           date: null,
-          email: null
+          email: null,
+          expanded: false,
         },
         {
           name: 'Toshiba',
@@ -198,7 +217,8 @@ export default {
           score: 3.7,
           test: 67,
           date: null,
-          email: null
+          email: null,
+          expanded: false,
         },
         {
           name: 'LG',
@@ -207,7 +227,8 @@ export default {
           score: 16.0,
           test: 49,
           date: null,
-          email: null
+          email: null,
+          expanded: false,
         },
         {
           name: 'JVC',
@@ -216,7 +237,8 @@ export default {
           score: 0.0,
           test: 94,
           date: null,
-          email: null
+          email: null,
+          expanded: false,
         },
         {
           name: 'Lenovo',
@@ -225,7 +247,8 @@ export default {
           score: 0.2,
           test: 98,
           date: null,
-          email: null
+          email: null,
+          expanded: false,
         },
         {
           name: 'Hewlett Packard',
@@ -234,7 +257,8 @@ export default {
           score: 3.2,
           test: 87,
           date: null,
-          email: null
+          email: null,
+          expanded: false,
         },
         {
           name: 'Hitachi',
@@ -243,7 +267,8 @@ export default {
           score: 25.0,
           test: 51,
           date: null,
-          email: null
+          email: null,
+          expanded: false,
         },
         {
           name: 'Logitec',
@@ -252,7 +277,8 @@ export default {
           score: 26.0,
           test: 65,
           date: null,
-          email: null
+          email: null,
+          expanded: false,
         }
       ]
     } else{
@@ -264,6 +290,7 @@ export default {
           test: 65,
           date: null,
           email: null,
+          expanded: false,
           child: {
             name: 'child'
           }
