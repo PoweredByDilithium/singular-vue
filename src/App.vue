@@ -15,20 +15,22 @@
           </v-card-title>
           <v-card-text>
             <v-container grid-list-md>
+              <v-form v-model="valid">
               <!-- v-layout: used for seperating sections, contains v-flex -->
               <v-layout wrap>
                 <!-- v-flex: automatically sets children to flex: 1 1 auto -->
                 <v-flex xs12 sm6 md4>
-                  <v-text-field label="Employer" v-model="editedItem.name"></v-text-field>
+                  <v-text-field label="Employer" v-model="editedItem.name" :rules="[$root.rules.required, $root.rules.beginwithA]"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
                   <!-- v-select: dropdown -->
                   <!-- v-bind: bound to 'states' as a list of objects -->
                   <!-- v-model: object property -->
                   <v-select
-                    v-bind:items="states"
+                    :items="states"
                     v-model="editedItem.state"
                     label="State"
+                    :rules="[$root.rules.required]"
                   ></v-select>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
@@ -38,9 +40,10 @@
                   <v-text-field label="Score" v-model="editedItem.score"></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6 md4>
-                  <v-text-field label="Test" v-model="editedItem.test"></v-text-field>
+                  <v-text-field label="Email Address" v-model="editedItem.email" :rules="[$root.rules.email]"></v-text-field>
                 </v-flex>
               </v-layout>
+              </v-form>
             </v-container>
           </v-card-text>
           <v-card-actions>
@@ -71,12 +74,13 @@
             <!-- Added v-model to bind to object property -->
               <v-select
                 :items="states"
+                :rules="[$root.rules.required]"
                 v-model="props.item.state"
                 label="State"
               ></v-select>
           </td>
           <td>
-            <!-- lazy: Conditionally renders content on mounted. Will only render content if activated 
+            <!-- lazy: Conditionally renders content on mounted. Will only render content if activated
                  close-on-content-click: designates if menu should close when its content is clicked
                  transition: sets the component transition. Can be one of the built in transitions or custom
                  offset-y: offset the menu on the y-axis
@@ -115,9 +119,11 @@
           <td>
             <v-text-field
               name="input-2"
-              label="Label Text"
-              v-model="props.item.TextValue"
-            ></v-text-field>
+              label="Email Address"
+              v-model="props.item.email"
+              :rules="[$root.rules.email]"
+            >
+            </v-text-field>
           </td>
           <td class="justify-center layout px-0">
             <v-btn icon class="mx-0" @click="editItem(props.item)">
@@ -165,7 +171,7 @@ export default {
           score: 6.0,
           test: 24,
           date: null,
-          TextValue: null
+          email: null
         },
         {
           name: 'Panasonic',
@@ -174,7 +180,7 @@ export default {
           score: 9.0,
           test: 37,
           date: null,
-          TextValue: null
+          email: null
         },
         {
           name: 'Sony',
@@ -183,7 +189,7 @@ export default {
           score: 16.0,
           test: 23,
           date: null,
-          TextValue: null
+          email: null
         },
         {
           name: 'Toshiba',
@@ -192,7 +198,7 @@ export default {
           score: 3.7,
           test: 67,
           date: null,
-          TextValue: null
+          email: null
         },
         {
           name: 'LG',
@@ -201,7 +207,7 @@ export default {
           score: 16.0,
           test: 49,
           date: null,
-          TextValue: null
+          email: null
         },
         {
           name: 'JVC',
@@ -210,7 +216,7 @@ export default {
           score: 0.0,
           test: 94,
           date: null,
-          TextValue: null
+          email: null
         },
         {
           name: 'Lenovo',
@@ -219,7 +225,7 @@ export default {
           score: 0.2,
           test: 98,
           date: null,
-          TextValue: null
+          email: null
         },
         {
           name: 'Hewlett Packard',
@@ -228,7 +234,7 @@ export default {
           score: 3.2,
           test: 87,
           date: null,
-          TextValue: null
+          email: null
         },
         {
           name: 'Hitachi',
@@ -237,7 +243,7 @@ export default {
           score: 25.0,
           test: 51,
           date: null,
-          TextValue: null
+          email: null
         },
         {
           name: 'Logitec',
@@ -246,7 +252,7 @@ export default {
           score: 26.0,
           test: 65,
           date: null,
-          TextValue: null
+          email: null
         }
       ]
     } else{
@@ -257,7 +263,7 @@ export default {
           score: 26.0,
           test: 65,
           date: null,
-          TextValue: null,
+          email: null,
           child: {
             name: 'child'
           }
@@ -278,12 +284,16 @@ export default {
         this.editedIndex = -1
     },
     save () {
-      if (this.editedIndex > -1) {
-        Object.assign(this.items[this.editedIndex], this.editedItem)
+      if(this.$refs.form.validate()){
+        if (this.editedIndex > -1) {
+          Object.assign(this.items[this.editedIndex], this.editedItem)
+        } else {
+          this.items.push(this.editedItem)
+        }
+        this.close()
       } else {
-        this.items.push(this.editedItem)
+        alert('Please fix errors!');
       }
-      this.close()
     },
     switchDataSet () {
       this.dataSelection = !this.dataSelection
@@ -295,9 +305,11 @@ export default {
       title: "Singular Vue",
       menu: false,
       dataSelection: true,
+      dialog: false,
       items: [],
       parentChildItems: [],
       editedIndex: -1,
+      valid: false,
       editedItem: {},
       defaultItem: {
         name: '',
@@ -306,7 +318,7 @@ export default {
           score: 0,
           test: 0,
           date: null,
-          TextValue: null
+          email: null
       },
       states: [
           { text: 'AAState 1', value:11  , group : 'Group 1'},
@@ -324,7 +336,7 @@ export default {
         { text: "Category", value: "category" },
         { text: "Score", value: "score" },
         { text: "Test", value: "test" },
-        { text: "TextValue", value: "Some Text" }
+        { text: "Email", value: "Email Address" }
       ]
     };
   },
